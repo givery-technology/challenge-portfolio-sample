@@ -6,6 +6,8 @@ var
   heroku = require('./heroku'),
   appname = require('../../account.json').heroku_appname;
 
+var deleteAPI = require('./DELETE-api-projects_id.spec.js');  
+
 var API = spec.define({
   "endpoint": "/api/projects",
   "method": spec.Method.POST,
@@ -41,6 +43,7 @@ var API = spec.define({
 
 describe('POST /api/projects', function () {
   var host = spec.host(heroku.origin(appname));
+  var project = {};
 
   it('should contains title', function (done) {
     host.api(API).params({
@@ -61,6 +64,16 @@ describe('POST /api/projects', function () {
       title: 'project',
       description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
       url: 'http://example.com',
+    }).success(function (data){
+      project = data;
+      console.log(project.id);
+      done();
+    });
+  });
+
+  after(function (done) {
+    host.api(deleteAPI).params({
+      id: project.id
     }).success(done);
   });
 

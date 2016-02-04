@@ -19,6 +19,7 @@ var API = spec.define({
 });
 
 describe("DELETE /api/projects/:id", function () {
+  this.timeout(5000);
   function create (callback) {
     var options = {
       url: "https://" + heroku.endpoint(appname, '/api/projects'),
@@ -58,3 +59,5 @@ describe("DELETE /api/projects/:id", function () {
   });
 
 });
+
+module.exports = API;

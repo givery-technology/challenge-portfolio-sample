@@ -6,6 +6,8 @@ var
   heroku = require('./heroku'),
   appname = require('../../account.json').heroku_appname;
 
+var deleteAPI = require('./DELETE-api-projects_id.spec.js');  
+
 var API = spec.define({
   "endpoint": "/api/projects/[id]",
   "method": spec.Method.GET,
@@ -22,6 +24,7 @@ var API = spec.define({
 });
 
 describe("GET /api/projects/:id", function () {
+  this.timeout(5000);
   function create (callback) {
     var options = {
       url: "https://" + heroku.endpoint(appname, '/api/projects'),
@@ -56,6 +59,12 @@ describe("GET /api/projects/:id", function () {
 
   it("should succeed if exsits", function (done) {
     host.api(API).params({
+      id: project.id
+    }).success(done);
+  });
+
+  after(function (done) {
+    host.api(deleteAPI).params({
       id: project.id
     }).success(done);
   });
