@@ -1,6 +1,7 @@
 'use strict';
 
 var
+  express = require('express'),
   app = require('express')(),
   port = process.env.PORT || 3000,
   bodyParser = require('body-parser'),
@@ -15,10 +16,13 @@ var
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/'));
 
-app.get('/', function (req, resp, next) {
-  resp.json('PONG');
-  return next();
+app.get('/', function (req, resp) {
+  // resp.json('PONG');
+  console.log(__dirname + '/css');
+  resp.sendFile(__dirname + '/index.html');
+  // return next();
 });
 
 app.get('/api/projects', function (req, resp, next) {

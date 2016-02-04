@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>codecheck-portfolio-sample</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+  <script type="text/javascript" src="./js/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Project List</h2>
+    <div id="project-list"></div>
+  </div>
+  
+  <footer class="footer">
+    <div class="container">
+      <p class="text-muted">&copy; Sukeshni Kantrod 2016</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<script type="text/javascript"> 
+  $.get("/api/projects", function(data){
+    console.log(data[0].title + "123456");
+
+    var items = [];
+    var i = 0;
+    while(data[i] != undefined){
+      console.log(data[i]);
+
+      items.push("<tr>" + "<td>" + data[i].id + "</td>" + "<td>" + data[i].url + "</td>" + "<td>" + data[i].title + "</td>" + "<td>" + data[i].description + "</td>" +  "</tr>" );
+      i++;
+    }
+ 
+    var thead = "<thead><th>Id</th><th>url</th><th>Title</th><th>Description</th></tr></thead>";
+    var tbody = "<tbody>" + items.join("") + "</tbody>";
+
+    $( "<table/>", {
+      "class": "table table-hover table-bordered table-responsive",
+      html: thead+tbody
+    }).appendTo( "#project-list" );
+
+  });
+  
+</script>
