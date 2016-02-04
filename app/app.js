@@ -25,7 +25,7 @@ app.get('/api/projects', function (req, resp, next) {
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
-        return new Project(proj.id, proj.title, proj.description, proj.url);
+        return new Project(proj.id, proj.title, proj.description, proj.url).toJson();
       });
       resp.json(projects);
       return next();
@@ -72,7 +72,7 @@ app.get('/api/projects/:id', function (req, resp, next) {
       var project = proj;
       if (proj) {
         project = new Project(proj.id, proj.title, proj.description, proj.url);
-        resp.json(project);
+        resp.json(project.toJson());
         return next();
       } else {
         resp.status(404).json(null);
@@ -103,7 +103,7 @@ app.delete('/api/projects/:id', function (req, resp, next) {
   * this is for 'in-memory' database and should be removed
   */
 var sqls = require('fs')
-  .readFileSync(__dirname + '/specifications/database.sql')
+  .readFileSync( __dirname + '/../specifications/database.sql')
   .toString();
 
 knex.raw(sqls)
