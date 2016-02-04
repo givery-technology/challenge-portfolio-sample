@@ -1,0 +1,16 @@
+{
+  "editable": [
+    "specifications/database.sql",
+    "account.json",
+    "answer.md"
+  ],
+  "excludes": [
+    "challenge.json"
+  ],
+  "readme": {
+    "en": "README.md",
+    "ja": "README_ja.md"
+  },
+  "allowNewFile": true,
+  "test": "mocha specifications/heroku"
+}
