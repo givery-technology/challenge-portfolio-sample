@@ -5,9 +5,15 @@ var
   app = require('express')(),
   port = process.env.PORT || 3000,
   bodyParser = require('body-parser'),
+  connectionString = process.env.DATABASE_URL,
   knex = require('knex')({
-    client: 'sqlite3',
-    connection: { filename: ':memory:' },
+    client: 'pg',
+    connection: connectionString,
+    searchPath: 'knex,public',
+    pool: {
+      min: 0,
+      max: 5
+    }
   }),
   Project = require('./project');
 
@@ -20,7 +26,6 @@ app.use(express.static(__dirname + '/'));
 
 app.get('/', function (req, resp) {
   // resp.json('PONG');
-  console.log(__dirname + '/css');
   resp.sendFile(__dirname + '/index.html');
   // return next();
 });
@@ -38,36 +43,30 @@ app.get('/api/projects', function (req, resp, next) {
       return next();
     });
 });
+
 app.post('/api/projects', function (req, resp, next) {
-  var
-    title = req.body.title,
-    description = req.body.description,
-    url = req.body.url;
-  var p = new Project(undefined, title, description, url);
-  if (!p.canSave()) {
-    resp.status(400).json('BadRequest');
+  if (!req.body.title || !req.body.description) {
+    resp.status("400").json("BadRequest");
     return next();
   }
-  var now = new Date();
-  var id = knex('projects').insert({
-    title: p.title(),
-    description: p.description(),
-    url: p.url(),
-    created_at: now.toISOString()
-  }).then(function (id) {
-    p.id(id[0]).createdAt(now);
-    console.log(p.toJson());
-    resp.status(200).json(p.toJson());
-    return next();
-  }).catch(function (err) {
-    if (err.errno === SQLITE_CONSTRAINT) {
+  var p = new Project(undefined, req.body.title, req.body.description, req.body.url);
+  knex("projects")
+    .returning("*")
+    .insert({
+      title: req.body.title,
+      description: req.body.description,
+      url: req.body.url
+    }).then(function(data) {
+      p.id(data[0].id);
+      var now = new Date();
+      p.createdAt(now);
+      resp.status(200).json(p.toJson());
+      return next();
+    }).catch(function (err){
+      console.log("err" + err);
       resp.status(400).json(err);
       return next();
-    } else {
-      resp.status(500).json(err);
-      return next();
-    }
-  });
+    });
 });
 
 app.get('/api/projects/:id', function (req, resp, next) {
@@ -101,22 +100,7 @@ app.delete('/api/projects/:id', function (req, resp, next) {
       return next();
     });
 });
-
-/** @ToDo
-  * Initialize database
-  * this is for 'in-memory' database and should be removed
-  */
-var sqls = require('fs')
-  .readFileSync( __dirname + '/../specifications/database.sql')
-  .toString();
-
-knex.raw(sqls)
-  .then(function () {
-    /** @ToDo
-      * Run server after database initialization
-      * this is for 'in-memory' database and should be removed
-      */
-    app.listen(port, function () {
-      console.log("Server running with port", port)
-    });
-  });
+    
+app.listen(port, function () {
+  console.log("Server running with port", port)
+});
