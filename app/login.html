@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
 <!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 8)|!(IE)]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 
    <!--- Basic Page Needs
@@ -17,32 +16,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/app.css" rel="stylesheet">
 
   <!-- Favicons
   ================================================== -->
   <link rel="shortcut icon" href="logo_black_small.png" >
 
 </head>
-<body>
-  <div class="jumbotron">
-    <div class="page-header">
-      <h2 class="admin">ADMIN PAGE</h2>
-    </div>
-  </div>
-  <div class="container">
-    <h2>Projects <small>Add/Update/Delete Project</small></h2>
-    <button class="btn btn-default" onClick="add_project()">ADD</button>
-    <button class="btn btn-default">UPDATE</button>
-    <button class="btn btn-default">DELETE</button>
-  </div>
-
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
-</body>
+<html>
+  <body>
+    <form action="/login" method="post">
+      <div>
+        <label>Username:</label>
+        <input type="text" name="username" />
+        <br/>
+      </div>
+      <div>
+        <label>Password:</label>
+        <input type="password" name="password" />
+      </div>
+      <div>
+        <input type="submit" value="Submit" id="btn" onClick="my_func()"/>
+      </div>
+    </form>
+  </body>
 </html>
 <script type="text/javascript">
-  function add_project(){
-    
-  }
+function my_func(){
+  console.log("hey1234");
+}
 </script>
+

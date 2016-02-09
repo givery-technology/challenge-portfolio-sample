@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/'));
 
-// var admin = express(); // the sub app
+// Authetication
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -52,12 +52,11 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
-app.get('/admin', function (req, resp) {
-  console.log("in admin get");
-  resp.sendFile(__dirname + '/admin.html');
+app.get('/login', function (req, resp) {
+  resp.sendFile(__dirname + '/login.html');
 });
 
-app.post('/admin',
+app.post('/login',
   passport.authenticate('local'),
   function(req, resp) {
     // If this function gets called, authentication was successful.
@@ -67,13 +66,12 @@ app.post('/admin',
   });
 
 app.get('/loginFailure', function(req, resp, next) {
-  console.log("in loginfailure");
   resp.send('Failed to authenticate');
 });
 
 app.get('/loginSuccess', function(req, resp, next) {
-  console.log("in loginsuccess");
-  resp.send('Successfully authenticated');
+  // resp.send('Successfully authenticated');
+  resp.sendFile(__dirname + '/admin.html');
 });
 
 app.get('/', function (req, resp) {
