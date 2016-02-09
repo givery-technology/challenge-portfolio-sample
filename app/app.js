@@ -31,6 +31,15 @@ var LocalStrategy = require('passport-local').Strategy;
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
 passport.use(new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
     knex.select('*').from('users')
@@ -47,18 +56,6 @@ app.get('/admin', function (req, resp) {
   console.log("in admin get");
   resp.sendFile(__dirname + '/admin.html');
 });
-
-// app.use('/admin', admin); // mount the sub app
-
-// app.post('/admin', function (req, resp) {
-//   console.log("in app.post(/admin)");
-//   passport.authenticate('local', {
-//     successRedirect: '/loginFailure',
-//     failureRedirect: '/loginSuccess',
-//     failureFlash: true 
-//   })
-//   console.log(req);
-// });
 
 app.post('/admin',
   passport.authenticate('local'),
