@@ -58,8 +58,7 @@ app.post('/api/projects', function (req, resp, next) {
       url: req.body.url
     }).then(function(data) {
       p.id(data[0].id);
-      var now = new Date();
-      p.createdAt(now);
+      p.createdAt(getDateToday());
       resp.status(200).json(p.toJson());
       return next();
     }).catch(function (err){
@@ -104,3 +103,17 @@ app.delete('/api/projects/:id', function (req, resp, next) {
 app.listen(port, function () {
   console.log("Server running with port", port)
 });
+
+function getDateToday() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+  if(dd < 10){
+    dd ='0'+ dd
+  } 
+  if(mm < 10){
+    mm ='0'+mm
+  } 
+  return today = yyyy+'-'+mm+'-'+dd;
+}

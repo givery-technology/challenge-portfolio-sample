@@ -31,14 +31,9 @@
   $.get("/api/projects", function(data){
     console.log(data[0].title + "123456");
 
-    var items = [];
-    var i = 0;
-    while(data[i] != undefined){
-      console.log(data[i]);
-
-      items.push("<tr>" + "<td>" + data[i].id + "</td>" + "<td>" + data[i].url + "</td>" + "<td>" + data[i].title + "</td>" + "<td>" + data[i].description + "</td>" +  "</tr>" );
-      i++;
-    }
+    var items = data.map(function (item) {
+      return "<tr>" + "<td>" + item.id + "</td>" + "<td>" + item.url + "</td>" + "<td>" + item.title + "</td>" + "<td>" + item.description + "</td>" +  "</tr>";
+    });
  
     var thead = "<thead><th>Id</th><th>url</th><th>Title</th><th>Description</th></tr></thead>";
     var tbody = "<tbody>" + items.join("") + "</tbody>";
