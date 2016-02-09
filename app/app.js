@@ -50,14 +50,24 @@ app.get('/admin', function (req, resp) {
 
 // app.use('/admin', admin); // mount the sub app
 
-app.post('/admin', function (req, resp) {
-  console.log("in app.post(/admin)");
-  passport.authenticate('local', {
-    successRedirect: '/loginFailure',
-    failureRedirect: '/loginSuccess',
-    failureFlash: true 
-  })
-});
+// app.post('/admin', function (req, resp) {
+//   console.log("in app.post(/admin)");
+//   passport.authenticate('local', {
+//     successRedirect: '/loginFailure',
+//     failureRedirect: '/loginSuccess',
+//     failureFlash: true 
+//   })
+//   console.log(req);
+// });
+
+app.post('/admin',
+  passport.authenticate('local'),
+  function(req, resp) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    console.log(req);
+    resp.redirect('/loginSuccess');
+  });
 
 app.get('/loginFailure', function(req, resp, next) {
   console.log("in loginfailure");
