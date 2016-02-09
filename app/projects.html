@@ -1,29 +1,36 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <title>codecheck-portfolio-sample</title>
 
-  <!-- Bootstrap core CSS -->
-  <link href="./css/bootstrap.min.css" rel="stylesheet">
+   <!--- Basic Page Needs
+   ================================================== -->
+   <meta charset="utf-8">
+  <title>codecheck | Find Great Developers | Portfolio Sample</title>
+  <meta name="Portfolio Sample" content="">
+  <meta name="Givery Inc." content="">
 
-  <script type="text/javascript" src="./js/jquery-2.2.0.min.js"></script>
+   <!-- Mobile Specific Metas
+   ================================================== -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Favicons
+  ================================================== -->
+  <link rel="shortcut icon" href="logo_black_small.png" >
+
 </head>
 <body>
   <div class="container">
     <h2>Project List</h2>
     <div id="project-list"></div>
   </div>
-  
-  <footer class="footer">
-    <div class="container">
-      <p class="text-muted">&copy; Sukeshni Kantrod 2016</p>
-    </div>
-  </footer>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
 </body>
 </html>
 
@@ -42,7 +49,6 @@
       "class": "table table-hover table-bordered table-responsive",
       html: thead+tbody
     }).appendTo( "#project-list" );
-
   });
   
 </script>
