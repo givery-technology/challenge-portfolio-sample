@@ -24,6 +24,51 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/'));
 
+// var admin = express(); // the sub app
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(function(username, password, done) {
+  process.nextTick(function() {
+    knex.select('*').from('users')
+    .where('username', username).andWhere('password', password)
+    .then(function(user) {
+      return done(null, user);
+    }).catch(function(err){
+      return done(err);
+    });
+  });
+}));
+
+app.get('/admin', function (req, resp) {
+  console.log("in admin get");
+  resp.sendFile(__dirname + '/admin.html');
+});
+
+// app.use('/admin', admin); // mount the sub app
+
+app.post('/admin', function (req, resp) {
+  console.log("in app.post(/admin)");
+  passport.authenticate('local', {
+    successRedirect: '/loginFailure',
+    failureRedirect: '/loginSuccess',
+    failureFlash: true 
+  })
+});
+
+app.get('/loginFailure', function(req, resp, next) {
+  console.log("in loginfailure");
+  resp.send('Failed to authenticate');
+});
+
+app.get('/loginSuccess', function(req, resp, next) {
+  console.log("in loginsuccess");
+  resp.send('Successfully authenticated');
+});
+
 app.get('/', function (req, resp) {
   // resp.json('PONG');
   resp.sendFile(__dirname + '/index.html');
