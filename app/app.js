@@ -17,8 +17,13 @@ var
   }),
   Project = require('./project');
 
-var
-  SQLITE_CONSTRAINT = 19;
+var cloudinary = require('cloudinary');
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET 
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -81,6 +86,11 @@ app.get('/', function (req, resp) {
 });
 
 app.get('/api/projects', function (req, resp, next) {
+  //Testing cloudinary 
+  cloudinary.api.resources(function(result)  { console.log(result) });
+  cloudinary.uploader.upload("https://lvs.luxury/wp-content/uploads/2015/06/x1920_Cherry-Blossom-Lake-Sakura-Japan.jpg", function(result) { 
+    console.log(result) 
+  });
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
