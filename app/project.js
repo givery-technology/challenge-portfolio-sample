@@ -13,11 +13,12 @@ var Project = (function () {
     }
   };
 
-  function Project (id, title, description, url, createdAt) {
+  function Project (id, title, description, url, imageUrl, createdAt) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._url = url;
+    this._imageUrl = imageUrl,
     this._createdAt = createdAt;
   }
   Project.prototype.id = function id (val) {
@@ -49,6 +50,14 @@ var Project = (function () {
       return this._url;
     } else {
       this._url = val;
+      return this;
+    }
+  };
+  Project.prototype.imageUrl = function imageUrl (val) {
+    if (isEmpty(val)) {
+      return this._imageUrl;
+    } else {
+      this._imageUrl = imageUrl;
       return this;
     }
   };

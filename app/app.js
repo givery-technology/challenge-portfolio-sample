@@ -94,7 +94,7 @@ app.get('/api/projects', function (req, resp, next) {
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
-        return new Project(proj.id, proj.title, proj.description, proj.url).toJson();
+        return new Project(proj.id, proj.title, proj.description, proj.url, proj.imageUrl).toJson();
       });
       resp.json(projects);
       return next();
@@ -109,13 +109,14 @@ app.post('/api/projects', function (req, resp, next) {
     resp.status("400").json("BadRequest");
     return next();
   }
-  var p = new Project(undefined, req.body.title, req.body.description, req.body.url);
+  var p = new Project(undefined, req.body.title, req.body.description, req.body.url, req.body.image_url);
   knex("projects")
     .returning("*")
     .insert({
       title: req.body.title,
       description: req.body.description,
-      url: req.body.url
+      url: req.body.url,
+      image_url: req.body.image_url
     }).then(function(data) {
       p.id(data[0].id);
       p.createdAt(getDateToday());
@@ -133,7 +134,7 @@ app.get('/api/projects/:id', function (req, resp, next) {
     .then(function first (proj) {
       var project = proj;
       if (proj) {
-        project = new Project(proj.id, proj.title, proj.description, proj.url);
+        project = new Project(proj.id, proj.title, proj.description, proj.url, proj.imageUrl);
         resp.json(project.toJson());
         return next();
       } else {
