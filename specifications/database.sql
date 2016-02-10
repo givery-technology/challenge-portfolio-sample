@@ -5,6 +5,6 @@
     url varchar(255) NULL,
     title varchar(255) NOT NULL,
     description text NOT NULL,
-    image_url test NULL,
+    image_url text NULL,
     created_at date NOT NULL DEFAULT CURRENT_DATE
   );
