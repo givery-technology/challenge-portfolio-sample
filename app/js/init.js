@@ -123,7 +123,7 @@
       newimg.attr("src", item.imageUrl);
 
       var i = modalCnt.toString();
-      newa1.attr("href", modal.concat(i));
+      newa1.attr("href", ("#").concat(modal.concat(i)));
 
       var overlay = div3.append(div4.append(newh4, newp));
 
