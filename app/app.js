@@ -95,7 +95,7 @@ app.get('/api/projects', function (req, resp, next) {
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
         var imageUrl;
-        imageUrl = cloudinary.image(proj.image_url);
+        imageUrl = cloudinary.url(proj.image_url);
         return new Project(proj.id, proj.title, proj.description, proj.url, imageUrl).toJson();
       });
       console.log(projects);
@@ -119,7 +119,7 @@ app.post('/api/projects', function (req, resp, next) {
     imageFormat = result.format;
   });
   image = image.concat(imageFormat);
-  imageUrl = cloudinary.image(image);
+  imageUrl = cloudinary.url(image);
   var p = new Project(undefined, req.body.title, req.body.description, req.body.url, image);
   knex("projects")
     .returning("*")
@@ -145,7 +145,7 @@ app.get('/api/projects/:id', function (req, resp, next) {
     .then(function first (proj) {
       var project = proj, imageUrl;
       if (proj) {
-        imageUrl = cloudinary.image(proj.image_url);
+        imageUrl = cloudinary.url(proj.image_url);
         project = new Project(proj.id, proj.title, proj.description, proj.url, imageUrl);
         resp.json(project.toJson());
         return next();
