@@ -117,7 +117,7 @@
         newa1 = $("<a title=''/>"); 
 
       var newimg  = $("<img>"),
-        newh4     = $("<h4/>").text(item.title),
+        newh5     = $("<h5/>").text(item.title),
         newp      = $("<p/>").text(item.description);
 
       newimg.attr("src", item.imageUrl);
@@ -125,7 +125,7 @@
       var i = modalCnt.toString();
       newa1.attr("href", ("#").concat(modal.concat(i)));
 
-      var overlay = div3.append(div4.append(newh4, newp));
+      var overlay = div3.append(div4.append(newh5, newp));
 
       var link    = div5.append(newi);
 
