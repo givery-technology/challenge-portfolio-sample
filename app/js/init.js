@@ -118,8 +118,7 @@
         newh4     = $("<h4/>").text(item.title),
         newp      = $("<p/>").text(item.description);
 
-      // newimg.src  =  "'" + item.imageUrl + "'";
-      newimg.attr("src", "../images/portfolio/coffee.jpg");
+      newimg.attr("src", item.imageUrl);
 
       var overlay = div3.append(div4.append(newh4, newp));
 
@@ -138,9 +137,9 @@
           mh5     = $("<h5/>").text(item.title),
           mp      = $("<p/>") .text(item.description);
 
-      mimg.attr("src", "../images/portfolio/coffee.jpg");
+      mimg.attr("src", item.imageUrl);
       mspan1.text("Branding, Webdesign");
-      ma1.attr("href", "'" + item.url + "'");
+      ma1.attr("href", item.url);
 
       var mhtml = mdiv1.append(mimg, mdiv2.append(mh5, mp, mspan1.append(mi1)), mdiv3.append(ma1, ma2));
 

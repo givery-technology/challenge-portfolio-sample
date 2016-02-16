@@ -80,17 +80,11 @@ app.get('/loginSuccess', function(req, resp, next) {
 });
 
 app.get('/', function (req, resp) {
-  // resp.json('PONG');
   resp.sendFile(__dirname + '/index.html');
   // return next();
 });
 
 app.get('/api/projects', function (req, resp, next) {
-  //Testing cloudinary 
-  // cloudinary.api.resources(function(result)  { console.log(result) });
-  // cloudinary.uploader.upload("https://lvs.luxury/wp-content/uploads/2015/06/x1920_Cherry-Blossom-Lake-Sakura-Japan.jpg", function(result) { 
-    // console.log(result) 
-  // });
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
