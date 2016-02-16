@@ -103,6 +103,8 @@
   $.get("api/projects", function(data) {
     
     console.log(data);   
+    var modalCnt = 0;
+    var modal    = "modal-";
     var items = data.map(function (item) {
       
     console.log(item);
@@ -112,7 +114,7 @@
         div4 = $("<div/>").addClass("portfolio-item-meta"),
         div5 = $("<div/>").addClass("link-icon"),
         newi = $("<i>").addClass("icon-plus"),
-        newa1 = $("<a href='#modal' title=''/>"); 
+        newa1 = $("<a title=''/>"); 
 
       var newimg  = $("<img>"),
         newh4     = $("<h4/>").text(item.title),
@@ -120,13 +122,16 @@
 
       newimg.attr("src", item.imageUrl);
 
+      var i = modalCnt.toString();
+      newa1.attr("href", modal.concat(i));
+
       var overlay = div3.append(div4.append(newh4, newp));
 
       var link    = div5.append(newi);
 
       var html = div1.append(div2.append(newa1.append(newimg, overlay, link)));
 
-      var mdiv1   = $("<div id='modal'/>").addClass("popup-modal mfp-hide"),
+      var mdiv1   = $("<div/>").addClass("popup-modal mfp-hide"),
           mimg    = $("<img>").addClass('scale-with-grid'),
           mdiv2   = $("<div/>").addClass("description-box"),
           mspan1  = $("<span/>").addClass("categories"),
@@ -140,8 +145,11 @@
       mimg.attr("src", item.imageUrl);
       mspan1.text("Branding, Webdesign");
       ma1.attr("href", item.url);
+      mdiv1.attr("id", modal.concat(i));
 
       var mhtml = mdiv1.append(mimg, mdiv2.append(mh5, mp, mspan1.append(mi1)), mdiv3.append(ma1, ma2));
+
+      modalCnt++;
 
       return mhtml.add(html);
     });
