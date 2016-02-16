@@ -94,7 +94,9 @@ app.get('/api/projects', function (req, resp, next) {
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
-        return new Project(proj.id, proj.title, proj.description, proj.url, proj.image_url).toJson();
+        var imageUrl;
+        imageUrl = cloudinary.image(proj.image_url);
+        return new Project(proj.id, proj.title, proj.description, proj.url, imageUrl).toJson();
       });
       console.log(projects);
       resp.json(projects);
@@ -110,14 +112,22 @@ app.post('/api/projects', function (req, resp, next) {
     resp.status("400").json("BadRequest");
     return next();
   }
-  var p = new Project(undefined, req.body.title, req.body.description, req.body.url, req.body.image_url);
+  var image, imageFormat, imageUrl;
+  cloudinary.uploader.upload(req.body.image_url, function(result) { 
+    console.log(result);
+    image = result.public_id;
+    imageFormat = result.format;
+  });
+  image = image.concat(imageFormat);
+  imageUrl = cloudinary.image(image);
+  var p = new Project(undefined, req.body.title, req.body.description, req.body.url, image);
   knex("projects")
     .returning("*")
     .insert({
       title: req.body.title,
       description: req.body.description,
       url: req.body.url,
-      image_url: req.body.image_url
+      image_url: image
     }).then(function(data) {
       p.id(data[0].id);
       p.createdAt(getDateToday());
@@ -133,9 +143,10 @@ app.post('/api/projects', function (req, resp, next) {
 app.get('/api/projects/:id', function (req, resp, next) {
   knex.first('*').from('projects').where('id', req.params.id)
     .then(function first (proj) {
-      var project = proj;
+      var project = proj, imageUrl;
       if (proj) {
-        project = new Project(proj.id, proj.title, proj.description, proj.url, proj.image_url);
+        imageUrl = cloudinary.image(proj.image_url);
+        project = new Project(proj.id, proj.title, proj.description, proj.url, imageUrl);
         resp.json(project.toJson());
         return next();
       } else {
