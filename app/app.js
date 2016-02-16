@@ -87,15 +87,16 @@ app.get('/', function (req, resp) {
 
 app.get('/api/projects', function (req, resp, next) {
   //Testing cloudinary 
-  cloudinary.api.resources(function(result)  { console.log(result) });
-  cloudinary.uploader.upload("https://lvs.luxury/wp-content/uploads/2015/06/x1920_Cherry-Blossom-Lake-Sakura-Japan.jpg", function(result) { 
-    console.log(result) 
-  });
+  // cloudinary.api.resources(function(result)  { console.log(result) });
+  // cloudinary.uploader.upload("https://lvs.luxury/wp-content/uploads/2015/06/x1920_Cherry-Blossom-Lake-Sakura-Japan.jpg", function(result) { 
+    // console.log(result) 
+  // });
   knex.select('*').from('projects')
     .then(function select (projs) {
       var projects = projs.map(function (proj) {
-        return new Project(proj.id, proj.title, proj.description, proj.url, proj.imageUrl).toJson();
+        return new Project(proj.id, proj.title, proj.description, proj.url, proj.image_url).toJson();
       });
+      console.log(projects);
       resp.json(projects);
       return next();
     }).catch(function (err) {
@@ -134,7 +135,7 @@ app.get('/api/projects/:id', function (req, resp, next) {
     .then(function first (proj) {
       var project = proj;
       if (proj) {
-        project = new Project(proj.id, proj.title, proj.description, proj.url, proj.imageUrl);
+        project = new Project(proj.id, proj.title, proj.description, proj.url, proj.image_url);
         resp.json(project.toJson());
         return next();
       } else {

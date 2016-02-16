@@ -76,6 +76,7 @@ var Project = (function () {
       title: this._title,
       description: this._description,
       url: this._url,
+      imageUrl: this._imageUrl,
       created_at: this._createdAt
     };
   };
