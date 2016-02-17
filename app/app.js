@@ -64,10 +64,14 @@ app.get('/login', function (req, resp) {
 app.post('/login',
   passport.authenticate('local'),
   function(req, resp) {
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    console.log(req);
-    resp.redirect('/loginSuccess');
+    console.log("req.user", req.user);
+    console.log("req.session", req.session);
+
+    if(req.user[0] == undefined) {
+      resp.redirect('/login');
+    } else {
+      resp.redirect('/loginSuccess');
+    }
   });
 
 app.get('/loginFailure', function(req, resp, next) {
