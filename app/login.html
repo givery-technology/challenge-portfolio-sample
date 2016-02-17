@@ -24,25 +24,55 @@
 </head>
 <html>
   <body>
-    <form action="/login" method="post">
-      <div>
-        <label>Username:</label>
-        <input type="text" name="username" />
-        <br/>
-      </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" name="password" />
-      </div>
-      <div>
-        <input type="submit" value="Submit" id="btn" onClick="my_func()"/>
-      </div>
-    </form>
+    <div class="container">
+      <h2>Admin Login</h2>
+      <form id="loginForm" role="form" action="/login">
+        <div class="form-group">
+          <div>
+            <label>Username:</label>
+            <input class="form-control" type="text" name="username" />
+            <br/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div>
+            <label>Password:</label>
+            <input class="form-control" type="password" name="password" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div>
+            <input class="btn btn-default" type="submit" value="Submit"/>
+          </div>
+        </div>
+      </form>
+    </div>
   </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
 </html>
 <script type="text/javascript">
-function my_func(){
-  console.log("hey1234");
-}
+$('#loginForm').submit(function(){
+  event.preventDefault();
+  $.ajax({
+    url: $('#loginForm').attr('action'),
+    type: 'POST',
+    data : $('#loginForm').serialize(),
+    success: function(data){
+      if(data.status === 401){
+        window.location = "/loginFailure";
+        console.log("Wrong Credentials"); 
+      } else {
+        window.location = "/loginSuccess";
+        window.alert("Successfull Login");
+      }
+    },
+    error: function(err){
+      console.log(err);
+      window.alert("Wrong Credentials");
+    }
+  });
+  return false;
+});
 </script>
 

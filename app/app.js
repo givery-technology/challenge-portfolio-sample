@@ -5,6 +5,7 @@ var
   app = require('express')(),
   port = process.env.PORT || 3000,
   bodyParser = require('body-parser'),
+  session = require('express-session'),
   connectionString = process.env.DATABASE_URL,
   knex = require('knex')({
     client: 'pg',
@@ -25,6 +26,13 @@ cloudinary.config({
   api_secret: process.env.API_SECRET 
 });
 
+app.use(session({
+  store: new (require('connect-pg-simple')(session))(),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  cookie: { maxAge: 1 * 24 * 60 * 60 * 1000 } // 1 day
+}));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/'));
@@ -32,10 +40,10 @@ app.use(express.static(__dirname + '/'));
 // Authetication
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var logout = require('express-passport-logout');
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -64,28 +72,44 @@ app.get('/login', function (req, resp) {
 app.post('/login',
   passport.authenticate('local'),
   function(req, resp) {
-    console.log("req.user", req.user);
-    console.log("req.session", req.session);
-
-    if(req.user[0] == undefined) {
-      resp.redirect('/login');
+    if(req.user[0] === undefined || req.user[0] === null ) {
+      resp.redirect('/loginFailure');
     } else {
       resp.redirect('/loginSuccess');
     }
   });
 
 app.get('/loginFailure', function(req, resp, next) {
-  resp.send('Failed to authenticate');
+  console.log("loginFailure");
+  resp.status(401).json('NotAuthenticated');
 });
 
 app.get('/loginSuccess', function(req, resp, next) {
-  // resp.send('Successfully authenticated');
-  resp.sendFile(__dirname + '/admin.html');
+    console.log("loginSuccess");
+  if(req.user === undefined || req.user === null ) {
+    resp.sendFile(__dirname + '/login.html');
+  }
+  else {
+    resp.sendFile(__dirname + '/admin.html');
+  }
+});
+ 
+app.get('/logout', function(req, resp){
+  logout();
+  req.session.destroy();
+  resp.redirect('/login');
 });
 
 app.get('/', function (req, resp) {
   resp.sendFile(__dirname + '/index.html');
-  // return next();
+});
+
+app.get('/api/notfound', function (req, resp, next) {
+  resp.status(404).json('NotFound');
+});
+
+app.get('/api/badrequest', function (req, resp, next) {
+  resp.status(400).json('BadRequest');
 });
 
 app.get('/api/projects', function (req, resp, next) {
@@ -106,7 +130,8 @@ app.get('/api/projects', function (req, resp, next) {
 });
 
 app.post('/api/projects', function (req, resp, next) {
-  if (!req.body.title || !req.body.description) {
+
+  if (!req.body.title || !req.body.description || !req.body.image_url || req.user[0] === undefined || req.user[0] === null ) {
     resp.status("400").json("BadRequest");
     return next();
   }
@@ -115,11 +140,10 @@ app.post('/api/projects', function (req, resp, next) {
     console.log(result);
     image = result.public_id;
     imageFormat = result.format;
-  });
-  image = image.concat(imageFormat);
-  imageUrl = cloudinary.url(image, {width: 800, height: 800, crop: "scale"});
-  var p = new Project(undefined, req.body.title, req.body.description, req.body.url, image);
-  knex("projects")
+    image = image.concat(".").concat(imageFormat);
+    imageUrl = image;
+    var p = new Project(undefined, req.body.title, req.body.description, req.body.url, image);
+    knex("projects")
     .returning("*")
     .insert({
       title: req.body.title,
@@ -136,6 +160,7 @@ app.post('/api/projects', function (req, resp, next) {
       resp.status(400).json(err);
       return next();
     });
+  });
 });
 
 app.get('/api/projects/:id', function (req, resp, next) {
@@ -155,7 +180,13 @@ app.get('/api/projects/:id', function (req, resp, next) {
       return next();
     });
 });
+
 app.delete('/api/projects/:id', function (req, resp, next) {
+
+  if(req.user[0] === undefined || req.user[0] === null ) {
+    resp.status("400").json("BadRequest");
+    return next();
+  }
   knex('projects').delete().where('id', req.params.id)
     .then(function delte (n) {
       if (n > 0) {
@@ -173,6 +204,17 @@ app.delete('/api/projects/:id', function (req, resp, next) {
     
 app.listen(port, function () {
   console.log("Server running with port", port)
+});
+
+app.get('/addProject', function (req, resp, next) {
+
+  if(req.user[0] === undefined || req.user[0] === null ) {
+    resp.status("400").json("BadRequest");
+    return next();
+  }
+  else {
+    resp.sendFile(__dirname + '/addProject.html');
+  }
 });
 
 function getDateToday() {

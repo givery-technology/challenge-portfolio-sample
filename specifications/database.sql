@@ -3,7 +3,7 @@
  create table projects (
     id serial PRIMARY KEY,
     url varchar(255) NULL,
-    title varchar(255) NOT NULL,
+    title varchar(255) NOT NULL UNIQUE,
     description text NOT NULL,
     image_url text NULL,
     created_at date NOT NULL DEFAULT CURRENT_DATE
