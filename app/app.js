@@ -6,6 +6,7 @@ var
   port = process.env.PORT || 3000,
   bodyParser = require('body-parser'),
   session = require('express-session'),
+  validUrl = require('valid-url'),
   connectionString = process.env.DATABASE_URL,
   knex = require('knex')({
     client: 'pg',
@@ -75,7 +76,7 @@ app.post('/login',
     if(req.user[0] === undefined || req.user[0] === null ) {
       resp.redirect('/loginFailure');
     } else {
-      resp.redirect('/loginSuccess');
+      resp.redirect('/admin');
     }
   });
 
@@ -84,8 +85,8 @@ app.get('/loginFailure', function(req, resp, next) {
   resp.status(401).json('NotAuthenticated');
 });
 
-app.get('/loginSuccess', function(req, resp, next) {
-    console.log("loginSuccess");
+app.get('/admin', function(req, resp, next) {
+    console.log("admin");
   if(req.user === undefined || req.user === null ) {
     resp.sendFile(__dirname + '/login.html');
   }
@@ -131,10 +132,11 @@ app.get('/api/projects', function (req, resp, next) {
 
 app.post('/api/projects', function (req, resp, next) {
 
-  if (!req.body.title || !req.body.description || !req.body.image_url || req.user[0] === undefined || req.user[0] === null ) {
+  if (!req.body.title || !req.body.description || req.user[0] === undefined || req.user[0] === null || !validUrl.isUri(req.body.url) || !validUrl.isUri(req.body.image_url) ) {
     resp.status("400").json("BadRequest");
     return next();
   }
+
   var image, imageFormat, imageUrl;
   cloudinary.uploader.upload(req.body.image_url, function(result) { 
     console.log(result);

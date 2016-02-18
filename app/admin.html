@@ -17,7 +17,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/app.css" rel="stylesheet">
 
   <!-- Favicons
   ================================================== -->
@@ -27,7 +26,7 @@
 <body>
   <div class="jumbotron">
     <div class="page-header">
-      <button class="btn btn-primary logout-btn" onClick="logout()">Logout</button>
+      <button class="btn btn-primary" onClick="logout()" style="position:relative;left: 85%;">Logout</button>
       <h2 class="text-center">ADMIN PAGE</h2>
     </div>
   </div>
@@ -78,6 +77,21 @@
 </body>
 </html>
 <script type="text/javascript">
+  var entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+  };
+
+  function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+
   function add_project(){
     window.location = '/addProject';
   }
@@ -105,10 +119,10 @@
       console.log(item);
       return "<tr>"
         + "<td>" + item.id + "</td>" 
-        + "<td>" + item.title + "</td>" 
-        + "<td>" + item.description + "</td>" 
+        + "<td>" + escapeHtml(item.title) + "</td>" 
+        + "<td>" + escapeHtml(item.description) + "</td>" 
         + "<td><a href='" + item.url + "' style='display:block;'>" + item.url + "</a>" + "</td>" 
-        + "<td><img class='img-thumbnail' width='250' height='250' src='" + item.imageUrl + "''>" + "</td>" 
+        + "<td><img class='img-thumbnail' width='100' height='60' src='" + item.imageUrl + "''>" + "</td>" 
         + "<td><button class='btn btn-default' onClick='delete_project(" + item.id + ")'>DELETE</button>" + "</td>"
         + "</tr>";
     });
